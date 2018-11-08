@@ -1,6 +1,5 @@
 const path = require('path');
 
-const webpack = require('webpack');
 // Extracting styles
 //const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const htmlWebpackPlugin = require('html-webpack-plugin')
@@ -13,23 +12,24 @@ const config = (env, argv) => {
   return {
     mode: argv.mode,
     entry: {
-      bundle: APP_DIR + "/index.js"
+      bundle: APP_DIR + "/index.jsx"
     },
     output: {
       path: path.resolve(__dirname, "public"),
       // using cache busting
       filename: "[name].[chunkhash].js", 
-      publicPath: "./"
+      // publicPath: "./"
     },
     module: {
       rules: [
         {
-          test: /\.js$/,
+          // Transpiles javascript files 
+          test: /\.(js|jsx)$/,
           exclude: /node_modules/,
           use: {
               loader: 'babel-loader',
               options: {
-                presets: ['@babel/preset-env'],
+                presets: ['@babel/preset-env', '@babel/preset-react'],
               }
           }
         },
@@ -38,7 +38,7 @@ const config = (env, argv) => {
     plugins: [
       new htmlWebpackPlugin({
         // Will create a stand-alone index.html file
-        template: "index.html"
+        template: path.join(__dirname, 'index.html')
       }),
     ],
     devtool: argv.mode === 'production' ? "" : 'inline-source-map',
